@@ -1,13 +1,10 @@
 // global variables
 let canvas;
 let ctx;
-//setting object size to 64
+
 let TILESIZE = 64;
-//setting width of boundary 22 times tilesize
 let WIDTH = TILESIZE * 22;
-//setting height of boundary 9 times tilesize
 let HEIGHT = TILESIZE * 9;
-//setting allSpriites and walls with empty arrays
 let allSprites = [];
 let walls = [];
 
@@ -16,7 +13,7 @@ let walls = [];
 // get user input from keyboard
 let keysDown = {};
 let keysUp = {};
-//setting grid for the game and placement of walls
+
 let gamePlan = `
 ......................
 ..#................#..
@@ -29,13 +26,12 @@ let gamePlan = `
 ......................`;
 
 
-//creating function for when down key is pressed
+
 addEventListener("keydown", function (event) {
     keysDown[event.key] = true;
     // console.log("key down is " + keysDown[event.key]);
 }, false);
 
-//creating function for when the up key is pressed
 addEventListener("keyup", function (event) {
     // keysUp[event.key] = true;
     delete keysDown[event.key];
@@ -46,7 +42,6 @@ addEventListener("keyup", function (event) {
 // we also append the body with a new canvas element
 function init() {
     canvas = document.createElement("canvas");
-    //shorting call terms for width and height of the canvas
     canvas.width = WIDTH;
     canvas.height = HEIGHT;
     ctx = canvas.getContext('2d');
@@ -54,40 +49,32 @@ function init() {
     document.body.appendChild(canvas);
     gameLoop();
 }
-//creating largest first class which is sprite
+
 class Sprite {
-    //adding constructor with descriptors of the object
     constructor(x, y, w, h, color) {
-        //shortening call terms for x,y,w,h,color
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.color = color;
-        //pushing this class to all
         allSprites.push(this);
     }
     get type() {
         return "sprite";
     }
-    //establisheing parameters 
     create(x, y, w, h, color) {
         return new Sprite(x, y, w, h, color);
     }
-    //drawing the initial object
     draw() {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.w, this.h);
     };
 }
 
-//creating a subclass of Sprite:  player 
+
 class Player extends Sprite {
-    //creating players constructor with its parameters
     constructor(x, y, speed, w, h, color, hitpoints) {
-        //all players have these parameters 
         super(x, y, w, h, color);
-        //establishing full definition of the parameters 
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -97,15 +84,12 @@ class Player extends Sprite {
         this.hitpoints = hitpoints;
         // console.log(this.hitpoints);
     }
-    //creating fucntion allowing the game to understand when the player collides with a wall
     collideWith(obj) {
-        //if the player crosses the x and y of the wall then 
         if (this.x + this.w > obj.x &&
             this.x < obj.x + obj.w &&
             this.y + this.h > obj.y &&
             this.y < obj.y + obj.h
         ) {
-            //print in console 
             console.log(this.type + ' collides with ' + obj.type);
             return true;
         }
@@ -113,29 +97,23 @@ class Player extends Sprite {
     get type() {
         return "player";
     }
-    //setting function for WASD input, allowing for input to retun as motion as change in direction 
     input() {
-        //conditional staement for upward movement
         if ('w' in keysDown) {
             this.dy = -1;
-            this.dx = 0;
             // console.log("dy is: " + this.dy)
             this.y -= this.speed;
         }
-        //conditional staement for left movement 
         if ('a' in keysDown) {
             this.dx = -1;
             // console.log("dx is: " + this.dx)
             this.x -= this.speed;
         }
-        //conditional statement for downward movement
         if ('s' in keysDown) {
             this.dy = 1
             // console.log("dy is: " + this.dy)
             this.y += this.speed;
 
         }
-        //conditional staement for right movement
         if ('d' in keysDown) {
             this.dx = 1;
             // console.log("dx is: " + this.dx)
@@ -143,7 +121,6 @@ class Player extends Sprite {
         }
 
     }
-    //udate function for player 
     update() {
         this.input();
         // this.y += Math.random()*5*this.speed;
@@ -162,12 +139,10 @@ class Player extends Sprite {
         }
     };
 }
-//creating subclass of player: ENEMY
+
 class Enemy extends Player {
-    //creating constructors with its parameters 
     constructor(x, y, speed, w, h, color, hitpoints) {
         super(x, y, speed, w, h, color, hitpoints);
-        //establish parameters 
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -188,12 +163,9 @@ let badguy = new Enemy();
 console.log("here's the example of a sub-sub class " + badguy.type);
 console.log("badguy stats " + badguy.speed);
 
-// creating a seperate sub class of Sprite: Wall
 class Wall extends Sprite {
-    //create constructors of Wall with its parameters 
     constructor(x, y, w, h, color) {
         super(x, y, w, h, color);
-        //establish parameters 
         this.x = x;
         this.y = y;
         this.w = w;
@@ -208,12 +180,12 @@ class Wall extends Sprite {
     }
 }
 
-//set the definition of the original array for the grid of the game
+
 const levelChars = {
     ".": "empty",
     "#": Wall,
 };
-//creating a fucntion in which constructs the grid
+
 function makeGrid(plan, width) {
     let newGrid = [];
     let newRow = [];
@@ -278,7 +250,6 @@ console.log('current level');
 console.log(currentLevel);
 
 // instantiations...
-//set orgins of player one as you first load the page
 let player1 = new Player(WIDTH / 2, HEIGHT / 2, 10, TILESIZE, TILESIZE, 'rgb(100, 100, 100)', 100);
 // let oneSquare = new Square("Bob", 10, 10, 1, 50, 50, 'rgb(200, 100, 200)');
 // let twoSquare = new Square("Chuck", 60, 60, 5, 100, 100, 'rgb(200, 200, 0)');
@@ -287,29 +258,24 @@ let player1 = new Player(WIDTH / 2, HEIGHT / 2, 10, TILESIZE, TILESIZE, 'rgb(100
 console.log(allSprites);
 console.log(walls);
 
-//creating collide function to set in place realites use of a wall
 function update() {
     for (i of allSprites) {
         if (i.type == "wall") {
-            // if console.log(i) is discorved (from previous function) then do ...
+            // console.log(i)
             if (player1.collideWith(i)) {
-                //change veloctiy upon collision to 0 for when going right
                 if (player1.dx == 1){
                     player1.dy = 0;
                     player1.x = i.x - player1.w;
                 }
-                //change veloctiy upon collision to 0 for when going left
                 else if (player1.dx == -1){
                     player1.dy = 0;
 
                     player1.x = i.x + i.w;
                 }
-                //change veloctiy upon collision to 0 for when going down
                 else if (player1.dy == 1){
                     player1.dx = 0;
                     player1.y = i.y - player1.h;
                 }
-                //change veloctiy upon collision to 0 for when going up
                 else if (player1.dy == -1){
                     player1.y = i.y + i.h;
                 }
